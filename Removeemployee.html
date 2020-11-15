@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Delete Employee</title>
+    <script
+            src="https://code.jquery.com/jquery-3.5.1.min.js"
+            integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0="
+            crossorigin="anonymous">
+    </script>
+    <link rel="stylesheet" href="css/css.css">
+    <link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Roboto'>
+    <style>
+        html,body,h1,h2,h3,h4,h5,h6,p,p1,p2 {font-family: "Roboto", sans-serif}
+    </style>
+    <script>
+        $(document).ready(function () {
+            $.ajax({
+                type: 'GET',
+                dataType: 'JSON',
+                url: 'https://htcs5607isap.herokuapp.com/api/employees/',
+                success: function (data) {
+                    console.log(data);
+                    i = 0;
+                    while (i < data.length) {
+                        employees = data[i];
+                        $("#show_servicelevel").append("" +
+                            "<option value='"
+                            + employees.employeeID + "'>" +
+                            employees.employeeID + " " +
+                            employees.lastname + " " +
+                            employees.firstname +
+                            "</option>");
+                        i++;
+                    }
+
+                    $("#show_servicelevel").change(function () {
+                        employeeID = $("#show_servicelevel").val();
+                        getSingleServiceLevel(employeeID);
+                    });
+
+                    $("#delete_but").click(function () {
+
+                        if ($("#show_servicelevel").val() == "") {
+                            $("#serviceLevelSelectionError").text("please select an Employee");
+                        } else {
+                            lastname = $("#show_servicelevel").val();
+                            deleteServiceLevel(lastname);
+                        }
+
+                    });
+                },
+
+                error: function (err) {
+                    console.log(err);
+                }
+
+            });
+        });
+
+        $(document).ready(function () {
+            $.ajax({
+                type: 'GET',
+                dataType: 'JSON',
+                url: 'https://htcs5607isap.herokuapp.com/api/desks/',
+                success: function (data) {
+                    console.log(data);
+                    i = 0;
+                    while (i < data.length) {
+                        desks = data[i];
+                        $("#show_desk").append("" +
+                            "<option value='"
+                            + desks.deskID + "'>" +
+                            desks.deskID + " " +
+                            desks.place + " " +
+                            desks.Status + " " +
+                            desks.building +
+                            "</option>");
+                        i++;
+                    }
+
+                    $("#show_desk").change(function () {
+                        deskID = $("#show_desk").val();
+                        getSingleDesk(deskID);
+                    });
+
+                    $("#change_servicelevel_but").click(function () {
+
+                        if ($("#show_desk").val() == "") {
+
+                            $("#deskSelectionError").text("please select a Desk");
+                        } else {
+                            deskID = $("#show_desk").val();
+                            updatedesk(deskID);
+                        }
+
+                    });
+
+                },
+
+                error: function (err) {
+                    console.log(err);
+                }
+
+            });
+        });
+
+        $(document).ready(function () {
+            $.ajax({
+                type: 'GET',
+                dataType: 'JSON',
+                url: 'https://htcs5607isap.herokuapp.com/api/employeeAndDesk/',
+                success: function (data) {
+                    console.log(data);
+                    i = 0;
+                    while (i < data.length) {
+                        employeeAndDesk = data[i];
+                        $("#show_employeeAndDesk").append("" +
+                            "<option value='"
+                            + employeeAndDesk.empAndDeskID + "'>" +
+                            employeeAndDesk.empAndDeskID +
+                            "</option>");
+                        i++;
+                    }
+
+                    $("#show_employeeAndDesk").change(function () {
+                        empAndDeskID = $("#show_employeeAndDesk").val();
+                        getSingleDesk(deskID);
+                    });
+
+                    $("#remove_employeeAndDesk_but").click(function () {
+
+                        if ($("#show_employeeAndDesk").val() == "") {
+
+                            $("#deskSelectionError").text("please select an Employee+Desk");
+                        } else {
+                            empAndDeskID = $("#show_employeeAndDesk").val();
+                            updatedesk(empAndDeskID);
+                        }
+
+                    });
+
+                },
+
+                error: function (err) {
+                    console.log(err);
+                }
+
+            });
+        });
+
+        function getSingleServiceLevel(employeeID) {
+            $.ajax({
+                type: 'GET',
+                dataType: 'JSON',
+                url: 'https://htcs5607isap.herokuapp.com/api/employees/' + employeeID + '/',
+                success: function (data) {
+                    console.log(data);
+                    employees = data;
+                    $("#servicelevel_servicelevelID_input").val(employees.employeeID);
+                    $("#servicelevel_description_input").val(employees.divisionDescription);
+                    $("#lastname_input").val(employees.lastname);
+                    $("#first_name_input").val(employees.firstname);
+                    $("#email_input").val(employees.emailAddress);
+                    $("#phone_number_input").val(employees.phoneNumber);
+                },
+                error: function (err) {
+                    console.log(err);
+                }
+            });
+        }
+        function getSingleServiceLevel(employeeID) {
+            $.ajax({
+                type: 'GET',
+                dataType: 'JSON',
+                url: 'https://htcs5607isap.herokuapp.com/api/employees/' + employeeID + '/',
+                success: function (data) {
+                    console.log(data);
+                    employees = data;
+                    $("#servicelevel_servicelevelID_input").val(employees.employeeID);
+                    $("#servicelevel_description_input").val(employees.divisionDescription);
+                    $("#lastname_input").val(employees.lastname);
+                    $("#first_name_input").val(employees.firstname);
+                    $("#email_input").val(employees.emailAddress);
+                    $("#phone_number_input").val(employees.phoneNumber);
+                },
+                error: function (err) {
+                    console.log(err);
+                }
+            });
+        }
+        function updatedesk(empAndDeskID) {
+            $.ajax({
+                type: 'DELETE',
+                dataType: 'JSON',
+                url: 'https://htcs5607isap.herokuapp.com/api/employeeAndDesk/' + empAndDeskID + '/',
+                success: function (data) {
+                    console.log(data);
+                },
+
+                success: function (data) {
+                    alert('Employee removed successfully');
+                    if (confirm('Do you want to remove another Employee')) {
+                        location.reload();
+                    } else {
+                        console.log("");
+                        window.location.href = "employeeMenu.html";
+                    }
+                    location.reload();
+                },
+                error: function (err) {
+                    console.log(err);
+                    errors = JSON.parse(err.responseText);
+                    console.log(errors);
+                    $("#servicelevelID_input_err").text(errors.employeeID);
+                    $("#description_input_err").text(errors.divisionDescription);
+                }
+            });
+        }
+    </script>
+</head>
+<body>
+<h1>Remove Employee</h1>
+<form onsubmit="return false">
+    <p>
+        <label>Employee ID: </label>
+        <select id="show_servicelevel">show_servicelevel
+            <option>Please Select an employee</option>
+        </select>
+    </p>
+    <p>
+        <label>Desk ID: </label>
+        <select id="show_desk">show_desk
+            <option>Please Select an employee</option>
+        </select>
+    </p>
+    <p>
+        <label>Division Description: </label>
+        <input id="servicelevel_description_input" type="text" readonly>
+    </p>
+    <p>
+        <label>Last Name: </label>
+        <input id="lastname_input" type="text" readonly>
+    </p>
+    <p>
+        <label>First Name: </label>
+        <input id="first_name_input" type="text" readonly>
+    </p>
+    <p>
+        <label>Email Address: </label>
+        <input id="email_input" type="text" readonly>
+    </p>
+    <p>
+        <label>Phone Number: </label>
+        <input id="phone_number_input" type="text" readonly>
+    </p>
+    <p>
+        <label>Employee and Desk: </label>
+        <select id="show_employeeAndDesk">show_employeeAndDesk
+            <option>Please Select a Employee/Desk</option>
+        </select>
+    </p>
+    <button class=modernButton id="remove_employeeAndDesk_but">Remove an Employee</button>
+    <button class=modernButton><a href="employeeMenu.html">Cancel</a></button>
+    </p>
+</form>
+</body>
+</html>
